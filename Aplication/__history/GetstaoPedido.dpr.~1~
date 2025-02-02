@@ -1,0 +1,15 @@
+program GetstaoPedido;
+
+uses
+  Vcl.Forms,
+  View.PedidoVenda in '..\View\View.PedidoVenda.pas' {Form2},
+  uCliente in '..\Class\uCliente.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TForm2, Form2);
+  Application.Run;
+end.

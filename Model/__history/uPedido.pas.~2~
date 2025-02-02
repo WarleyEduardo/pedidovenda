@@ -1,0 +1,51 @@
+unit uPedido;
+
+interface
+
+ type
+
+ Tpedido = class
+  private
+    FCliente: integer;
+    FCodigo: integer;
+    FValorTotal: Currency;
+    FDataEmissao: Tdate;
+    procedure SetCliente(const Value: integer);
+    procedure SetCodigo(const Value: integer);
+    procedure SetDataEmissao(const Value: Tdate);
+    procedure SetValorTotal(const Value: Currency);
+  published
+
+  property Codigo : integer read FCodigo write SetCodigo;
+  property Cliente : integer read FCliente write SetCliente;
+  property DataEmissao : Tdate read FDataEmissao write SetDataEmissao;
+  Property ValorTotal  : Currency read FValorTotal write SetValorTotal;
+
+
+ end;
+
+implementation
+
+{ Tpedido }
+
+procedure Tpedido.SetCliente(const Value: integer);
+begin
+  FCliente := Value;
+end;
+
+procedure Tpedido.SetCodigo(const Value: integer);
+begin
+  FCodigo := Value;
+end;
+
+procedure Tpedido.SetDataEmissao(const Value: Tdate);
+begin
+  FDataEmissao := Value;
+end;
+
+procedure Tpedido.SetValorTotal(const Value: Currency);
+begin
+  FValorTotal := Value;
+end;
+
+end.

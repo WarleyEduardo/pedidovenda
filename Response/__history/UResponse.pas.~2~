@@ -1,0 +1,16 @@
+unit UResponse;
+
+interface
+
+type
+
+ Response = Record
+
+   Success : boolean;
+   Message : string;
+
+ End;
+
+implementation
+
+end.

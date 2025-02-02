@@ -1,0 +1,21 @@
+program GestaoPedido;
+
+uses
+  Vcl.Forms,
+  View.PedidoVenda in '..\View\View.PedidoVenda.pas' {Form2},
+  UseCaseCliente in '..\UseCase\UseCaseCliente.pas',
+  uCliente in '..\Model\uCliente.pas',
+  UResponse in '..\Response\UResponse.pas',
+  uConnect in '..\Dao\uConnect.pas',
+  Unit1 in 'Unit1.pas' {DataModule1: TDataModule},
+  uDtoCliente in '..\Dto\uDtoCliente.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TDataModule1, DataModule1);
+  Application.Run;
+end.

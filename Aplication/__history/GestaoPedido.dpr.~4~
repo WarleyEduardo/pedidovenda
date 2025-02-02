@@ -1,0 +1,16 @@
+program GestaoPedido;
+
+uses
+  Vcl.Forms,
+  View.PedidoVenda in '..\View\View.PedidoVenda.pas' {Form2},
+  UseCaseCliente in '..\UseCase\UseCaseCliente.pas',
+  uCliente in '..\Model\uCliente.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TForm2, Form2);
+  Application.Run;
+end.

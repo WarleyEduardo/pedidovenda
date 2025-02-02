@@ -1,0 +1,19 @@
+unit uUtils;
+
+interface
+
+uses
+  Vcl.Dialogs;
+
+
+ procedure ExibirMensagem(msg : string);
+
+implementation
+
+
+ procedure ExibirMensagem(msg : string);
+ begin
+   showmessage(msg);
+ end;
+
+end.

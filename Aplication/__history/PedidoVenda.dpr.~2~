@@ -1,0 +1,33 @@
+program PedidoVenda;
+
+uses
+  Vcl.Forms,
+  View.PedidoVenda in '..\View\View.PedidoVenda.pas' {Form2},
+  uUseCaseCliente in '..\UseCase\uUseCaseCliente.pas',
+  uCliente in '..\Model\uCliente.pas',
+  UResponse in '..\Response\UResponse.pas',
+  uConnect in '..\Dao\uConnect.pas',
+  Unit1 in 'Unit1.pas' {DataModule1: TDataModule},
+  uDtoCliente in '..\Dto\uDtoCliente.pas',
+  uProduto in '..\Model\uProduto.pas',
+  uDtoPedido in '..\Dto\uDtoPedido.pas',
+  uDtoProduto in '..\Dto\uDtoProduto.pas',
+  uUseCaseProduto in '..\UseCase\uUseCaseProduto.pas',
+  uPedido in '..\Model\uPedido.pas',
+  uPedidoProduto in '..\Model\uPedidoProduto.pas',
+  uDtoPedidoProduto in '..\Dto\uDtoPedidoProduto.pas',
+  uUseCasePedido in '..\UseCase\uUseCasePedido.pas',
+  uUseCasePedidoProduto in '..\UseCase\uUseCasePedidoProduto.pas',
+  uControllerCliente in '..\Controller\uControllerCliente.pas',
+  uControllerProduto in '..\Controller\uControllerProduto.pas',
+  uControllerPedido in '..\Controller\uControllerPedido.pas',
+  uControllerPedidoProduto in '..\Controller\uControllerPedidoProduto.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TForm2, Form2);
+  Application.Run;
+end.

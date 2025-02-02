@@ -1,0 +1,21 @@
+unit uCliente;
+
+
+interface
+
+
+ type
+
+ TCliente = class
+
+   Codigo : Integer;
+   Nome   : string;
+   Cidade : string;
+   UF     : string;
+
+
+ end;
+
+implementation
+
+end.

@@ -1,0 +1,17 @@
+unit uDtoPedido;
+
+interface
+
+type
+
+ DtoConsultaPedido = record
+  Codigo,
+  CodigoCliente : integer;
+  DataInicial,
+  DataFinal : Tdate;
+
+ end;
+
+implementation
+
+end.

@@ -1,0 +1,15 @@
+unit uDtoCliente;
+
+interface
+
+type
+
+ DtoCliente = record
+  Codigo : integer;
+  Nome,  Cidade : string;
+
+ end ;
+
+implementation
+
+end.

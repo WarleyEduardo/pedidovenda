@@ -1,0 +1,18 @@
+unit uDtoPedidoProduto;
+
+interface
+
+type
+
+ DtoPedidoProduto  = record
+
+
+  Codigo,
+  CodigoPedido ,
+  CodigoProduto: integer;
+
+ end;
+
+implementation
+
+end.

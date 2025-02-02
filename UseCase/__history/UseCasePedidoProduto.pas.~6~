@@ -1,0 +1,220 @@
+unit UseCasePedidoProduto;
+
+interface
+
+uses uPedidoProduto, uResponse, uDtoPedidoProduto, uconnect,
+     system.SysUtils, system.Generics.Collections;
+
+
+Type
+
+  TUseCasePedidoProduto = class
+  private
+   Connect: Tconnect;
+
+    FLista: TObjectList<TPedidoProduto>;
+    procedure SetLista(const Value: TObjectList<TPedidoProduto>);
+
+
+  public
+  function Cadastrar(PedidoProduto : TPedidoProduto)   : Response;
+  function Alterar(PedidoProduto : TPedidoProduto)     : Response;
+  function Excluir(codigo : integer)     : Response;
+  function Consultar(dto : DtoPedidoProduto)    : TObjectList<TPedidoProduto>;
+  function ConsultarId(codigo : integer) : TPedidoProduto;
+
+
+  property Lista : TObjectList<TPedidoProduto> read FLista write SetLista;
+
+  constructor create;
+  destructor Destroy;override;
+
+  end;
+
+
+
+implementation
+
+{ TUseCasePedidoProduto }
+
+function TUseCasePedidoProduto.Alterar(PedidoProduto: TPedidoProduto): Response;
+
+var
+ Sql : string;
+ retorno :Response;
+begin
+
+   sql := ' update PedidoProdutos set '+
+          ' CodigoProduto =  '  + IntToStr(PedidoProduto.CodigoProduto) + ',' +
+          ' quantidade =  '     + Stringreplace(floatTostr(PedidoProduto.Quantidade),',','.',[]) +
+          ' valorunitario =  '     + Stringreplace(currTostr(PedidoProduto.ValorUnitario),',','.',[]) +
+          ' valortotal =  '     + Stringreplace(currTostr(PedidoProduto.ValorTotal),',','.',[]) +
+          ' where codigo = '    + intTostr(PedidoProduto.Codigo) ;
+
+
+  retorno := connect.ExecSql(sql) ;
+
+  if retorno.Success then
+  begin
+    result.Success := true;
+    result.Message := 'Alterado com sucesso';
+  end else
+  begin
+    result := retorno;
+  end;
+
+end;
+
+function TUseCasePedidoProduto.Cadastrar(PedidoProduto: TPedidoProduto): Response;
+var
+ Sql : string;
+ retorno :Response;
+begin
+
+   sql := ' Insert into PedidoProdutos '+
+          '(codigoproduto,quantidade,valorunitario,valortotal)  values (' +
+           IntToStr(PedidoProduto.Codigoproduto) + ',' +
+           QuotedStr(dateTostr(PedidoProduto.DataEmissao))  + ',' +
+           Stringreplace(currTostr(PedidoProduto.Valortotal),',','.',[]) +  ')';
+
+  retorno := connect.ExecSql(sql) ;
+
+  if retorno.Success then
+  begin
+    result.Success := true;
+    result.Message := 'Cadastrado com sucesso';
+  end else
+  begin
+    result := retorno;
+  end;
+
+
+end;
+
+function TUseCasePedidoProduto.Consultar(dto: DtoPedidoProduto): TObjectList<TPedidoProduto>;
+var
+ sql : string;
+
+ PedidoProduto : TPedidoProduto;
+begin
+
+   sql := 'select * from PedidoProdutos where 1 = 1 ' ;
+
+   if Dto.Codigo > 0 then
+   begin
+     sql := sql  +  ' and codigo = ' + inttostr(dto.codigo);
+   end else
+   begin
+
+      if dto.CodigoCliente >  0 then
+      begin
+        sql := Sql  + ' and codigocliente = ' + intTostr(dto.CodigoCliente);
+      end;
+
+      if (dto.DataInicial >  0) and (dto.DataFinal >  0)  then
+      begin
+
+       sql := Sql +  'and dataemissao between ' + Quotedstr(dateTostr(dto.DataInicial))  +
+              ' and ' + Quotedstr(dateTostr(dto.DataFinal)) ;
+
+      end;
+
+   end;
+
+
+   if connect.Consulta(sql).Success then
+   begin
+
+    Flista.Clear;
+
+
+
+     with connect do
+     begin
+        query.First;
+
+        while not query.Eof  do
+        begin
+
+           PedidoProduto := TPedidoProduto.Create;
+
+           PedidoProduto.Codigo        := query.FieldByName('codigo').asInteger;
+           PedidoProduto.CodigoCliente := query.FieldByName('codigoCliente').AsInteger;
+           PedidoProduto.DataEmissao   := query.FieldByName('datEmissao').AsDateTime;
+           PedidoProduto.ValorTotal    := query.FieldByName('valortotal').AsCurrency;
+
+           Lista.Add(PedidoProduto);
+
+           query.Next;
+
+        end;
+
+     end;
+
+
+   end;
+
+
+end;
+
+function TUseCasePedidoProduto.ConsultarId(codigo: integer): TPedidoProduto;
+var
+ dto : DtoPedidoProduto;
+ lista  : TObjectList<TPedidoProduto>;
+begin
+
+  dto.Codigo := codigo;
+  lista :=  Consultar(dto);
+
+  if Lista.Count > 0  then
+  begin
+    result := lista[0];
+  end;
+
+end;
+
+constructor TUseCasePedidoProduto.create;
+begin
+
+
+ Lista := TObjectList<TPedidoProduto>.Create;
+ Connect := Tconnect.Create;
+end;
+
+destructor TUseCasePedidoProduto.Destroy;
+begin
+
+  Lista.Free;
+  Connect.Free;
+
+  inherited;
+end;
+
+function TUseCasePedidoProduto.Excluir(codigo: integer): Response;
+var
+ sql : string;
+ retorno : Response;
+begin
+  sql := 'delete from PedidoProdutos '+
+          'where codigo = '  +  intToStr(codigo);
+
+   retorno := connect.ExecSql(sql) ;
+
+  if retorno.Success then
+  begin
+    result.Success := true;
+    result.Message := 'Excluído com sucesso';
+  end else
+  begin
+    result := retorno;
+  end;
+
+end;
+
+procedure TUseCasePedidoProduto.SetLista(const Value: TObjectList<TPedidoProduto>);
+begin
+  FLista := Value;
+end;
+
+end.
+

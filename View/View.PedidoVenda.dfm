@@ -1,0 +1,869 @@
+object FrmPedidoVendas: TFrmPedidoVendas
+  Left = 0
+  Top = 0
+  BorderIcons = [biMinimize, biMaximize]
+  BorderStyle = bsNone
+  BorderWidth = 1
+  ClientHeight = 853
+  ClientWidth = 1198
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  KeyPreview = True
+  WindowState = wsMaximized
+  OnKeyPress = FormKeyPress
+  OnShow = FormShow
+  TextHeight = 15
+  object pnFundo: TPanel
+    Left = 0
+    Top = 0
+    Width = 1198
+    Height = 781
+    Align = alClient
+    BevelOuter = bvNone
+    Color = 14080730
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -37
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentBackground = False
+    ParentFont = False
+    TabOrder = 0
+    object pntopo: TPanel
+      Left = 0
+      Top = 0
+      Width = 1198
+      Height = 65
+      Align = alTop
+      BevelOuter = bvNone
+      Color = 4079166
+      ParentBackground = False
+      TabOrder = 0
+      OnMouseDown = pntopoMouseDown
+      object btnFechar: TSpeedButton
+        Left = 1133
+        Top = 0
+        Width = 65
+        Height = 65
+        Cursor = crHandPoint
+        Align = alRight
+        Caption = ' x'
+        Flat = True
+        OnClick = btnFecharClick
+        ExplicitLeft = 1840
+        ExplicitHeight = 49
+      end
+      object Label1: TLabel
+        Left = 0
+        Top = 0
+        Width = 1133
+        Height = 65
+        Align = alClient
+        Alignment = taCenter
+        Caption = 'Pedido de Venda'
+        Color = 4079166
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -37
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        OnMouseDown = Label1MouseDown
+        ExplicitWidth = 293
+        ExplicitHeight = 50
+      end
+    end
+    object Panel1: TPanel
+      Left = 0
+      Top = 65
+      Width = 808
+      Height = 716
+      ParentCustomHint = False
+      Align = alClient
+      BevelOuter = bvNone
+      BiDiMode = bdLeftToRight
+      Color = 14080730
+      Ctl3D = True
+      DoubleBuffered = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -37
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      Padding.Left = 10
+      Padding.Top = 10
+      Padding.Bottom = 10
+      ParentBiDiMode = False
+      ParentBackground = False
+      ParentCtl3D = False
+      ParentDoubleBuffered = False
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = False
+      TabOrder = 1
+      object Panel3: TPanel
+        Left = 10
+        Top = 10
+        Width = 798
+        Height = 696
+        Align = alClient
+        BevelOuter = bvNone
+        Color = clWhite
+        Padding.Left = 10
+        Padding.Top = 10
+        Padding.Right = 10
+        Padding.Bottom = 10
+        ParentBackground = False
+        TabOrder = 0
+        object pnTotal: TPanel
+          Left = 10
+          Top = 571
+          Width = 778
+          Height = 115
+          Align = alBottom
+          BevelOuter = bvNone
+          Color = 14912079
+          ParentBackground = False
+          TabOrder = 0
+          DesignSize = (
+            778
+            115)
+          object lbValorTotal: TLabel
+            Left = 631
+            Top = 43
+            Width = 128
+            Height = 50
+            Alignment = taRightJustify
+            Anchors = [akTop, akRight]
+            Caption = 'R$ 0,00'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWhite
+            Font.Height = -37
+            Font.Name = 'Segoe UI'
+            Font.Style = [fsBold]
+            ParentFont = False
+            ExplicitLeft = 651
+          end
+          object Label6: TLabel
+            Left = 10
+            Top = 44
+            Width = 227
+            Height = 50
+            Caption = 'Total a Pagar'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWhite
+            Font.Height = -37
+            Font.Name = 'Segoe UI'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+        end
+        object pnCabecalho: TPanel
+          Left = 10
+          Top = 10
+          Width = 778
+          Height = 102
+          Align = alTop
+          BevelOuter = bvNone
+          Color = 7434609
+          Padding.Top = 4
+          ParentBackground = False
+          TabOrder = 1
+          object pnNomCliente: TPanel
+            Left = 139
+            Top = 4
+            Width = 492
+            Height = 98
+            Align = alClient
+            BevelOuter = bvNone
+            Padding.Top = 32
+            Padding.Right = 10
+            Padding.Bottom = 30
+            TabOrder = 0
+            object Label9: TLabel
+              Left = 1
+              Top = 7
+              Width = 104
+              Height = 21
+              BiDiMode = bdLeftToRight
+              Caption = 'F1 - Consultar'
+              Color = clWhite
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWhite
+              Font.Height = -16
+              Font.Name = 'Segoe UI'
+              Font.Style = [fsBold]
+              ParentBiDiMode = False
+              ParentColor = False
+              ParentFont = False
+            end
+            object edNomeCliente: TEdit
+              Left = 0
+              Top = 32
+              Width = 482
+              Height = 36
+              TabStop = False
+              Align = alClient
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clBlack
+              Font.Height = -21
+              Font.Name = 'Segoe UI'
+              Font.Style = []
+              ParentFont = False
+              ReadOnly = True
+              TabOrder = 0
+              OnDblClick = edNomeClienteDblClick
+              ExplicitHeight = 38
+            end
+          end
+          object pnCodigoCliente: TPanel
+            Left = 0
+            Top = 4
+            Width = 139
+            Height = 98
+            Align = alLeft
+            BevelOuter = bvNone
+            Padding.Top = 30
+            Padding.Right = 10
+            Padding.Bottom = 30
+            TabOrder = 1
+            object Label7: TLabel
+              Left = 23
+              Top = -3
+              Width = 79
+              Height = 32
+              Caption = 'Cliente'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWhite
+              Font.Height = -24
+              Font.Name = 'Segoe UI'
+              Font.Style = [fsBold]
+              ParentFont = False
+            end
+            object edCodigoCliente: TEdit
+              Left = 22
+              Top = 31
+              Width = 111
+              Height = 38
+              Alignment = taRightJustify
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clBlack
+              Font.Height = -21
+              Font.Name = 'Segoe UI'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 0
+              OnChange = edCodigoClienteChange
+              OnKeyDown = edCodigoClienteKeyDown
+              OnKeyPress = edCodigoClienteKeyPress
+            end
+          end
+          object pnData: TPanel
+            Left = 631
+            Top = 4
+            Width = 147
+            Height = 98
+            Align = alRight
+            BevelOuter = bvNone
+            TabOrder = 2
+            object lbData: TLabel
+              Left = 33
+              Top = -1
+              Width = 53
+              Height = 32
+              Caption = 'Data'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWhite
+              Font.Height = -24
+              Font.Name = 'Segoe UI'
+              Font.Style = [fsBold]
+              ParentFont = False
+            end
+            object edData: TEdit
+              Left = 6
+              Top = 31
+              Width = 127
+              Height = 38
+              TabStop = False
+              Alignment = taCenter
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clBlack
+              Font.Height = -21
+              Font.Name = 'Segoe UI'
+              Font.Style = []
+              ParentFont = False
+              ReadOnly = True
+              TabOrder = 0
+            end
+          end
+        end
+        object pnGrid: TPanel
+          Left = 10
+          Top = 112
+          Width = 778
+          Height = 459
+          Align = alClient
+          BevelOuter = bvNone
+          Padding.Top = 10
+          Padding.Bottom = 10
+          TabOrder = 2
+          object DBGrid1: TDBGrid
+            Left = 0
+            Top = 10
+            Width = 778
+            Height = 439
+            TabStop = False
+            Align = alClient
+            DataSource = DataSource1
+            DrawingStyle = gdsClassic
+            FixedColor = 14912079
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clRed
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Options = [dgTitles, dgColumnResize, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+            ParentFont = False
+            TabOrder = 0
+            TitleFont.Charset = DEFAULT_CHARSET
+            TitleFont.Color = clRed
+            TitleFont.Height = -37
+            TitleFont.Name = 'Segoe UI'
+            TitleFont.Style = []
+            OnKeyDown = DBGrid1KeyDown
+            Columns = <
+              item
+                Alignment = taCenter
+                Expanded = False
+                FieldName = 'codigoproduto'
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clBlack
+                Font.Height = -19
+                Font.Name = 'Segoe UI'
+                Font.Style = []
+                Title.Caption = 'C'#243'digo'
+                Title.Font.Charset = DEFAULT_CHARSET
+                Title.Font.Color = clWhite
+                Title.Font.Height = -19
+                Title.Font.Name = 'Segoe UI'
+                Title.Font.Style = [fsBold]
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'descricaoproduto'
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clBlack
+                Font.Height = -19
+                Font.Name = 'Segoe UI'
+                Font.Style = []
+                Title.Caption = 'Descri'#231#227'o'
+                Title.Font.Charset = DEFAULT_CHARSET
+                Title.Font.Color = clWhite
+                Title.Font.Height = -19
+                Title.Font.Name = 'Segoe UI'
+                Title.Font.Style = [fsBold]
+                Width = 1020
+                Visible = True
+              end
+              item
+                Alignment = taCenter
+                Expanded = False
+                FieldName = 'quantidade'
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clBlack
+                Font.Height = -19
+                Font.Name = 'Segoe UI'
+                Font.Style = []
+                Title.Alignment = taCenter
+                Title.Caption = 'Qtd'
+                Title.Font.Charset = DEFAULT_CHARSET
+                Title.Font.Color = clWhite
+                Title.Font.Height = -19
+                Title.Font.Name = 'Segoe UI'
+                Title.Font.Style = [fsBold]
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'ValorUnitario'
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clBlack
+                Font.Height = -19
+                Font.Name = 'Segoe UI'
+                Font.Style = []
+                Title.Alignment = taRightJustify
+                Title.Caption = 'Valor'
+                Title.Font.Charset = DEFAULT_CHARSET
+                Title.Font.Color = clWhite
+                Title.Font.Height = -19
+                Title.Font.Name = 'Segoe UI'
+                Title.Font.Style = [fsBold]
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'ValorTotal'
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clBlack
+                Font.Height = -19
+                Font.Name = 'Segoe UI'
+                Font.Style = []
+                Title.Alignment = taRightJustify
+                Title.Caption = 'Total'
+                Title.Font.Charset = DEFAULT_CHARSET
+                Title.Font.Color = clWhite
+                Title.Font.Height = -19
+                Title.Font.Name = 'Segoe UI'
+                Title.Font.Style = [fsBold]
+                Visible = True
+              end>
+          end
+        end
+      end
+    end
+    object pnLateral: TPanel
+      Left = 808
+      Top = 65
+      Width = 390
+      Height = 716
+      Align = alRight
+      BevelOuter = bvNone
+      Padding.Left = 10
+      Padding.Top = 10
+      Padding.Right = 10
+      Padding.Bottom = 10
+      TabOrder = 2
+      object Panel2: TPanel
+        Left = 10
+        Top = 10
+        Width = 370
+        Height = 696
+        Align = alClient
+        BevelOuter = bvNone
+        Color = clWhite
+        Padding.Left = 40
+        Padding.Top = 15
+        Padding.Right = 40
+        Padding.Bottom = 30
+        ParentBackground = False
+        TabOrder = 0
+        object Label2: TLabel
+          Left = 131
+          Top = 112
+          Width = 106
+          Height = 37
+          BiDiMode = bdLeftToRight
+          Caption = 'Produto'
+          Color = clWhite
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = 7434609
+          Font.Height = -27
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentBiDiMode = False
+          ParentColor = False
+          ParentFont = False
+        end
+        object Label3: TLabel
+          Left = 124
+          Top = 249
+          Width = 150
+          Height = 37
+          Caption = 'Quantidade'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = 7434609
+          Font.Height = -27
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object Label4: TLabel
+          Left = 163
+          Top = 374
+          Width = 67
+          Height = 37
+          Caption = 'Valor'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = 7434609
+          Font.Height = -27
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object Label8: TLabel
+          Left = 135
+          Top = 195
+          Width = 104
+          Height = 21
+          BiDiMode = bdLeftToRight
+          Caption = 'F1 - Consultar'
+          Color = clWhite
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = 7434609
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentBiDiMode = False
+          ParentColor = False
+          ParentFont = False
+        end
+        object edProduto: TEdit
+          Left = 33
+          Top = 155
+          Width = 305
+          Height = 38
+          Alignment = taCenter
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -21
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          OnKeyDown = edProdutoKeyDown
+          OnKeyPress = edProdutoKeyPress
+        end
+        object edQuantidade: TEdit
+          Left = 34
+          Top = 291
+          Width = 305
+          Height = 38
+          Alignment = taCenter
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -21
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 1
+          OnKeyPress = edQuantidadeKeyPress
+        end
+        object edValor: TEdit
+          Left = 39
+          Top = 412
+          Width = 305
+          Height = 38
+          Alignment = taCenter
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -21
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 2
+          OnKeyPress = edValorKeyPress
+        end
+        object ContainerInserir: TPanel
+          Left = 40
+          Top = 585
+          Width = 290
+          Height = 81
+          Align = alBottom
+          BevelOuter = bvNone
+          Color = 14912079
+          Padding.Left = 4
+          Padding.Top = 4
+          Padding.Right = 4
+          Padding.Bottom = 4
+          ParentBackground = False
+          TabOrder = 3
+          object pnFundoInserir: TPanel
+            Left = 4
+            Top = 4
+            Width = 282
+            Height = 73
+            Cursor = crHandPoint
+            Align = alClient
+            BevelOuter = bvNone
+            Color = clWhite
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = 14912079
+            Font.Height = -24
+            Font.Name = 'Segoe UI'
+            Font.Style = [fsBold]
+            ParentBackground = False
+            ParentFont = False
+            TabOrder = 0
+            object btninserir: TButton
+              Left = 0
+              Top = 0
+              Width = 282
+              Height = 73
+              ParentCustomHint = False
+              Align = alClient
+              BiDiMode = bdLeftToRight
+              Caption = 'Inserir'
+              DoubleBuffered = False
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clLime
+              Font.Height = -37
+              Font.Name = 'Segoe UI'
+              Font.Style = []
+              ParentBiDiMode = False
+              ParentDoubleBuffered = False
+              ParentFont = False
+              ParentShowHint = False
+              ShowHint = False
+              TabOrder = 0
+              OnClick = btnInserirClick
+            end
+          end
+        end
+        object pnCodigoPedido: TPanel
+          Left = 40
+          Top = 15
+          Width = 290
+          Height = 83
+          Align = alTop
+          BevelOuter = bvNone
+          TabOrder = 4
+          ExplicitTop = 0
+          object Label5: TLabel
+            Left = 0
+            Top = 0
+            Width = 290
+            Height = 32
+            Align = alTop
+            Alignment = taCenter
+            BiDiMode = bdLeftToRight
+            Caption = ' Pedido'
+            Color = clWhite
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = 7434609
+            Font.Height = -24
+            Font.Name = 'Segoe UI'
+            Font.Style = [fsBold]
+            ParentBiDiMode = False
+            ParentColor = False
+            ParentFont = False
+            ExplicitLeft = 90
+            ExplicitTop = 14
+            ExplicitWidth = 86
+          end
+          object lbCodigoPedido: TLabel
+            Left = 0
+            Top = 32
+            Width = 290
+            Height = 32
+            Align = alTop
+            Alignment = taCenter
+            BiDiMode = bdLeftToRight
+            Caption = '0000'
+            Color = clWhite
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = 7434609
+            Font.Height = -24
+            Font.Name = 'Segoe UI'
+            Font.Style = [fsBold]
+            ParentBiDiMode = False
+            ParentColor = False
+            ParentFont = False
+            ExplicitLeft = 113
+            ExplicitTop = 48
+            ExplicitWidth = 56
+          end
+        end
+      end
+    end
+  end
+  object pnRodape: TPanel
+    Left = 0
+    Top = 781
+    Width = 1198
+    Height = 72
+    Align = alBottom
+    Color = 7434609
+    ParentBackground = False
+    TabOrder = 1
+    object Panel6: TPanel
+      Left = 1
+      Top = 1
+      Width = 1196
+      Height = 8
+      Align = alTop
+      BevelOuter = bvNone
+      Color = 14912079
+      ParentBackground = False
+      TabOrder = 0
+    end
+    object ContainerGravar: TPanel
+      Left = 209
+      Top = 18
+      Width = 156
+      Height = 45
+      BevelOuter = bvNone
+      Color = clWhite
+      Padding.Left = 2
+      Padding.Top = 2
+      Padding.Right = 2
+      Padding.Bottom = 2
+      ParentBackground = False
+      TabOrder = 1
+      object btnGravar: TPanel
+        Left = 2
+        Top = 2
+        Width = 152
+        Height = 41
+        Cursor = crHandPoint
+        Align = alClient
+        BevelOuter = bvNone
+        Caption = 'Gravar'
+        Color = 8404992
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -19
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 0
+        OnClick = btnGravarClick
+      end
+    end
+    object ContainerConsultar: TPanel
+      Left = 395
+      Top = 18
+      Width = 156
+      Height = 45
+      BevelOuter = bvNone
+      Color = clWhite
+      Padding.Left = 2
+      Padding.Top = 2
+      Padding.Right = 2
+      Padding.Bottom = 2
+      ParentBackground = False
+      TabOrder = 2
+      object btnConsultar: TPanel
+        Left = 2
+        Top = 2
+        Width = 152
+        Height = 41
+        Cursor = crHandPoint
+        Align = alClient
+        BevelOuter = bvNone
+        Caption = 'Consultar'
+        Color = 3294597
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -19
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 0
+        OnClick = btnConsultarClick
+      end
+    end
+    object containerExcluir: TPanel
+      Left = 595
+      Top = 18
+      Width = 156
+      Height = 45
+      BevelOuter = bvNone
+      Color = clWhite
+      Padding.Left = 2
+      Padding.Top = 2
+      Padding.Right = 2
+      Padding.Bottom = 2
+      ParentBackground = False
+      TabOrder = 3
+      object btnExcluir: TPanel
+        Left = 2
+        Top = 2
+        Width = 152
+        Height = 41
+        Cursor = crHandPoint
+        Align = alClient
+        BevelOuter = bvNone
+        Caption = 'Excluir'
+        Color = 262312
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -19
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 0
+        OnClick = btnExcluirClick
+      end
+    end
+    object ContarinerNovo: TPanel
+      Left = 19
+      Top = 18
+      Width = 156
+      Height = 45
+      BevelOuter = bvNone
+      Color = clWhite
+      Padding.Left = 2
+      Padding.Top = 2
+      Padding.Right = 2
+      Padding.Bottom = 2
+      ParentBackground = False
+      TabOrder = 4
+      object btnNovo: TPanel
+        Left = 2
+        Top = 2
+        Width = 152
+        Height = 41
+        Cursor = crHandPoint
+        Align = alClient
+        BevelOuter = bvNone
+        Caption = 'Novo'
+        Color = 6052910
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -19
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 0
+        OnClick = btnNovoClick
+      end
+    end
+  end
+  object TablePedido: TFDMemTable
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 426
+    Top = 371
+    object TablePedidocodigo: TIntegerField
+      FieldName = 'codigo'
+    end
+    object TablePedidocodigoproduto: TIntegerField
+      FieldName = 'codigoproduto'
+    end
+    object TablePedidodescricaoproduto: TStringField
+      FieldName = 'descricaoproduto'
+      Size = 30
+    end
+    object TablePedidoquantidade: TFloatField
+      FieldName = 'quantidade'
+    end
+    object TablePedidoValorUnitario: TCurrencyField
+      FieldName = 'ValorUnitario'
+      DisplayFormat = '0.00'
+    end
+    object TablePedidoValorTotal: TCurrencyField
+      FieldName = 'ValorTotal'
+      DisplayFormat = '0.00'
+    end
+  end
+  object DataSource1: TDataSource
+    DataSet = TablePedido
+    Left = 394
+    Top = 451
+  end
+end

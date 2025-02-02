@@ -1,0 +1,16 @@
+unit uDtoProduto;
+
+interface
+
+type
+
+ DtoConsultaProduto = record
+
+  codigo : integer;
+  Descricao : string;
+
+ end;
+
+implementation
+
+end.

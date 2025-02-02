@@ -1,0 +1,837 @@
+unit View.PedidoVenda;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids,
+  uControllerProduto, uControllerPedido,uControllerPedidoProduto,
+  uDtoProduto, uDtoCliente, uControllerCliente,uUtils, UResponse,uDtoPedido,
+  uDtoPedidoProduto, system.Generics.Collections,system.DateUtils,uSingletonConnect;
+type
+
+
+  Tstatus = (sConsulta, sNovo);
+
+
+   TProdutoSelecionado = record
+    codigo : integer;
+    Descricao   : string;
+    Precovenda  : currency;
+
+   end;
+
+
+   TclienteSelecionado = record
+     codigo : integer;
+     nome   : string;
+   end;
+
+
+
+  TFrmPedidoVendas = class(TForm)
+    pnFundo: TPanel;
+    pntopo: TPanel;
+    btnFechar: TSpeedButton;
+    Label1: TLabel;
+    Panel1: TPanel;
+    pnLateral: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    edProduto: TEdit;
+    Label2: TLabel;
+    Label3: TLabel;
+    edQuantidade: TEdit;
+    Label4: TLabel;
+    edValor: TEdit;
+    ContainerInserir: TPanel;
+    pnTotal: TPanel;
+    pnRodape: TPanel;
+    Panel6: TPanel;
+    lbValorTotal: TLabel;
+    Label6: TLabel;
+    pnCabecalho: TPanel;
+    edNomeCliente: TEdit;
+    pnNomCliente: TPanel;
+    Label7: TLabel;
+    edCodigoCliente: TEdit;
+    pnCodigoCliente: TPanel;
+    ContainerGravar: TPanel;
+    btnGravar: TPanel;
+    ContainerConsultar: TPanel;
+    btnConsultar: TPanel;
+    containerExcluir: TPanel;
+    btnExcluir: TPanel;
+    pnFundoInserir: TPanel;
+    TablePedido: TFDMemTable;
+    TablePedidocodigo: TIntegerField;
+    TablePedidocodigoproduto: TIntegerField;
+    TablePedidodescricaoproduto: TStringField;
+    TablePedidoquantidade: TFloatField;
+    TablePedidoValorUnitario: TCurrencyField;
+    TablePedidoValorTotal: TCurrencyField;
+    DataSource1: TDataSource;
+    pnGrid: TPanel;
+    DBGrid1: TDBGrid;
+    pnData: TPanel;
+    edData: TEdit;
+    lbData: TLabel;
+    ContarinerNovo: TPanel;
+    btnNovo: TPanel;
+    pnCodigoPedido: TPanel;
+    Label5: TLabel;
+    lbCodigoPedido: TLabel;
+    btninserir: TButton;
+    Label8: TLabel;
+    Label9: TLabel;
+    procedure pntopoMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure btnFecharClick(Sender: TObject);
+    procedure btnGravarClick(Sender: TObject);
+    procedure btnConsultarClick(Sender: TObject);
+    procedure btnExcluirClick(Sender: TObject);
+    procedure Label1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure edProdutoKeyPress(Sender: TObject; var Key: Char);
+    procedure edQuantidadeKeyPress(Sender: TObject; var Key: Char);
+    procedure edValorKeyPress(Sender: TObject; var Key: Char);
+    procedure FormShow(Sender: TObject);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
+    procedure edCodigoClienteKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoClienteKeyPress(Sender: TObject; var Key: Char);
+    procedure edNomeClienteDblClick(Sender: TObject);
+    procedure edProdutoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoClienteChange(Sender: TObject);
+    procedure DBGrid1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btnInserirClick(Sender: TObject);
+    procedure btnNovoClick(Sender: TObject);
+    procedure btnInsrirClick(Sender: TObject);
+  private
+    { Private declarations }
+
+    Status : Tstatus;
+    
+    ValorTotal : Currency;
+
+    ProdutoSelecionado : TProdutoSelecionado;
+    ClienteSelecionado : Tclienteselecionado;
+
+    ControllerProduto : TControllerProduto;
+    Controllercliente : TControllerCliente;
+    ControllerPedido  : TControllerPedido;
+    ControllerPedidoProduto : TcontrollerPedidoProduto;
+
+    procedure InserirItem;
+    procedure GravarPedido;
+    procedure ConsultarPedido;
+    procedure ExcluirPedido;
+    procedure LimparCamposInserirItem;
+    procedure fechar;
+    procedure consultarcliente(codigo: integer);
+    procedure ConsultarProduto(codigo : integer);
+    procedure ExibirConsultacliente;
+    procedure ExibirConsultaProduto;
+    procedure PreencherProdutoSelecionado;
+    procedure PreencherClienteSelecionado;
+    procedure PreencherValortotal;
+    procedure NovoPedido;
+    Procedure PreencherData;
+    
+
+
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmPedidoVendas: TFrmPedidoVendas;
+
+implementation
+
+{$R *.dfm}
+
+uses View.Clientes, View.Produtos, System.SysUtils, Vcl.Dialogs;
+
+procedure TFrmPedidoVendas.btnFecharClick(Sender: TObject);
+begin
+ fechar;
+end;
+
+procedure TFrmPedidoVendas.edCodigoClienteChange(Sender: TObject);
+begin
+  containerExcluir.Visible   := edCodigoCliente.Text = '';
+  containerConsultar.Visible := edCodigoCliente.Text = '';
+end;
+
+procedure TFrmPedidoVendas.edCodigoClienteKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+
+  if Key = VK_RETURN then
+  begin
+
+    if (trim(edCodigoCliente.Text) <> '')
+    and   (strtoint(trim(edCodigoCliente.Text)) <> 0)
+    and  (strtoint(trim(edCodigoCliente.Text)) <> clienteSelecionado.codigo)  then
+    begin
+      consultarcliente(strtoInt(edCodigoCliente.Text));
+      PreencherClienteSelecionado;
+    end;
+
+
+  end;
+
+  if Key = VK_F1  then
+  begin
+    ExibirConsultacliente;
+  end
+
+
+end;
+
+procedure TFrmPedidoVendas.edCodigoClienteKeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  If not( key in['0'..'9',#08] ) then
+  key:=#0;
+end;
+
+procedure TFrmPedidoVendas.edNomeClienteDblClick(Sender: TObject);
+begin
+  ExibirConsultaCliente;
+end;
+
+procedure TFrmPedidoVendas.edProdutoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin 
+
+  if Key = VK_F1  then
+  begin
+     ExibirConsultaproduto;
+  end;
+
+  if Key = VK_RETURN then
+  begin
+
+    if (trim(edproduto.Text) <> '') and (strtoint(trim(edproduto.Text)) <> 0)  then
+    begin
+      consultarProduto(strtoInt(edproduto.Text));
+
+    end;
+
+  end
+
+
+end;
+
+procedure TFrmPedidoVendas.edProdutoKeyPress(Sender: TObject; var Key: Char);
+begin
+If not( key in['0'..'9',#08] ) then
+  key:=#0;
+end;
+
+procedure TFrmPedidoVendas.edQuantidadeKeyPress(Sender: TObject; var Key: Char);
+begin
+If not( key in['0'..'9',#08, ','] ) then
+  key:=#0;
+end;
+
+procedure TFrmPedidoVendas.edValorKeyPress(Sender: TObject; var Key: Char);
+begin
+  If not( key in['0'..'9',#08, ','] ) then
+  key:=#0;
+end;
+
+procedure TFrmPedidoVendas.ExcluirPedido;
+var
+ codigoPedido : string;
+ _response : Response;
+begin
+
+
+  if InputQuery('Informe o nº Pedido','Pedido:', CodigoPedido) then
+  begin
+
+    try
+    
+      strtoint(CodigoPedido);
+    except
+      ExibirMensagem('Erro','Código inválido!');
+      abort;
+    end;
+
+    if not  ControllerPedido.consistirExiste(StrtoInt(CodigoPedido)) then
+    begin
+      ExibirMensagem('Erro','Código não encontrado!');
+      abort;
+    end;
+
+    if not confirmar('Excluir Pedido ' + CodigoPedido +  '?') then
+    begin
+      abort
+    end;
+
+
+    _response := ControllerPedidoProduto.Excluir(StrtoInt(CodigoPedido));
+
+    if _response.Success then
+    begin
+
+      _response := ControllerPedido.Excluir(StrtoInt(CodigoPedido));
+   
+    
+
+     if _response.Success then
+     begin
+       ExibirMensagem('Informação','Pedido Excluído !');
+     end else
+     begin
+       ExibirMensagem('Erro','Falha ao exlcuir pedido nº: ' + CodigoPedido);
+     end;
+
+    end else
+    begin
+
+      ExibirMensagem('Erro','Falha ao excluir pedido nº: ' + CodigoPedido )
+    end;
+
+  end;      
+
+
+end;
+
+procedure TFrmPedidoVendas.ExibirConsultacliente;
+begin
+  FrmClientes := TFrmClientes.Create(self);
+  FrmClientes.ShowModal;
+
+  if frmClientes.selecionado.codigo >  0 then
+  begin
+
+    ClienteSelecionado.codigo :=  frmClientes.selecionado.codigo;
+    Clienteselecionado.nome   :=  frmClientes.selecionado.nome;
+
+    PreencherClienteSelecionado;
+  end;
+
+  FrmClientes.Free;
+
+end;
+
+procedure TFrmPedidoVendas.ExibirConsultaProduto;
+begin
+
+  FrmProdutos := TFrmProdutos.Create(self);
+  FrmProdutos.ShowModal;
+
+  if frmprodutos.Selecionado.codigo >  0 then
+  begin
+
+    ProdutoSelecionado.codigo     := frmprodutos.Selecionado.codigo;
+    ProdutoSelecionado.Descricao  := frmprodutos.Selecionado.Descricao;
+    ProdutoSelecionado.Precovenda := frmprodutos.Selecionado.Preco;
+
+    PreencherProdutoSelecionado;
+
+  end;
+
+  FrmProdutos.Free;
+
+
+end;
+
+procedure TFrmPedidoVendas.fechar;
+begin
+
+  ControllerProduto.Free;
+  Controllercliente.Free;
+  ControllerPedido.Free;
+
+  ControllerPedidoProduto.free;
+  connection.Free;
+  self.Close;
+  
+end;
+
+procedure TFrmPedidoVendas.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+ if (Key = #13) then
+ begin
+   Key := #0;
+   Perform(Wm_NextDlgCtl,0,0);
+ end;
+
+end;
+
+procedure TFrmPedidoVendas.FormShow(Sender: TObject);
+begin
+
+ ControllerProduto       := TControllerProduto.create;
+ Controllercliente       := TControllerCliente.create;
+ ControllerPedido        := TControllerPedido.create;
+ ControllerPedidoProduto := TControllerPedidoProduto.create;
+
+ NovoPedido;
+
+end;
+
+procedure TFrmPedidoVendas.GravarPedido;
+var
+ CodigoCliente, CodigoPedido, CodigoProduto : integer;
+ DataEmissao : Tdate;
+ _response : Response;
+ Total : currency;
+ Quantidade : real;
+ ValorUnitario : currency;
+
+begin
+
+  if status = sconsulta then
+  begin
+    ExibirMensagem('Atenção','Gravação não permitida na consulta');
+    abort;
+  end;
+
+
+  if trim(edCodigoCliente.Text) = '' then
+  begin
+
+    ExibirMensagem('Atenção','Cliente deve ser informado');
+    abort;
+  
+  end;  
+  
+
+  if TablePedido.IsEmpty then
+  begin
+
+    ExibirMensagem('Atenção','Item deve ser informado');
+    abort;
+  
+  end;  
+ 
+
+ CodigoCliente := StrToInt(edCodigoCliente.Text);
+
+ DataEmissao := StrtoDate(FormatDateTime('dd/MM/yyyy', now));
+
+  Total := Valortotal;
+
+ _Response :=  ControllerPedido.Cadastrar(CodigoCliente,DataEmissao,Total);
+
+ if _response.Success then
+ begin
+  CodigoPedido := _response.Codigo;
+
+   TablePedido.First;
+
+   while not TablePedido.Eof do
+   begin
+
+     CodigoProduto  := TablePedidocodigoproduto.AsInteger;
+     Quantidade     := TablePedidoquantidade.AsFloat;
+     ValorUnitario  := TablePedidoValorUnitario.AsCurrency;
+
+
+     _response := ControllerPedidoProduto.Cadastrar(CodigoPedido,codigoProduto,
+                   quantidade,ValorUnitario);
+
+     if not _response.Success then
+     begin
+       exibirMensagem('Erro','Falha ao gravar item ' +  TablePedidocodigoproduto.AsString +
+                      '   ' + TablePedidodescricaoproduto.AsString);
+     end;
+
+
+    TablePedido.Next;
+   end;
+
+
+   ExibirMensagem('Informação','Pedido gravado com sucesso n.º: ' + intTostr(CodigoPedido) );
+
+   NovoPedido;
+
+ end else
+ begin
+
+   ExibirMensagem('Erro','Falha ao gravar pedido!');
+ end;
+
+end;
+
+procedure TFrmPedidoVendas.InserirItem;
+var
+ CodigoProduto : Integer;
+ Descricao : string;
+ PrecoVenda : currency;
+ Quantidade : real;
+ produto : DtoProduto;
+
+begin
+
+   if status = sconsulta then
+  begin
+    ExibirMensagem('Atenção','Inserção não permitida na consulta');
+    abort;
+  end;
+
+
+
+  if trim(edProduto.Text) = '' then
+  begin
+    ExibirMensagem('Atenção','Produto deve ser informado');
+    edProduto.SetFocus;
+    abort;
+  end;
+
+  if strtoInt(edProduto.Text) <= 0 then
+  begin
+    ExibirMensagem('Erro','Código inválido');
+    edProduto.SetFocus;
+    abort;
+  end;
+
+
+  if trim(edQuantidade.Text) = '' then
+  begin
+    ExibirMensagem('Atenção','Quantidade  deve ser informado');
+    edQuantidade.SetFocus;
+    abort;
+  end;
+
+  if strtoFloat(edProduto.Text) <= 0 then
+  begin
+    ExibirMensagem('Erro','Quantidade inválido');
+    edQuantidade.SetFocus;
+    abort;
+  end;
+
+
+  if trim(edValor.Text) = '' then
+  begin
+    ExibirMensagem('Atenção','Valor deve ser informado');
+    edValor.SetFocus;
+    abort;
+  end;
+
+  if StrToCurr(edValor.Text) <= 0 then
+  begin
+    ExibirMensagem('Erro','Valor inválido');
+    edValor.SetFocus;
+    abort;
+  end;
+
+  CodigoProduto := strtoInt(edProduto.Text);
+  Quantidade    := strtoFloat(edQuantidade.Text);
+  PrecoVenda    := StrToCurr(edValor.text);
+
+
+  if Codigoproduto = ProdutoSelecionado.codigo then
+  begin
+    Descricao := Produtoselecionado.Descricao;
+  end else
+  begin
+
+   Produto :=  ControllerProduto.ConsultarCodigo(CodigoProduto);
+
+   if Produto.codigo <= 0 then
+   begin
+
+    ExibirMensagem('Erro','Produto inexistente');
+    edproduto.SetFocus;
+    abort;
+
+   end;
+
+   descricao := produto.Descricao;
+
+  end; 
+
+  if not(TablePedido.Active) then  TablePedido.Open;
+
+  TablePedido.Insert;
+  TablePedidocodigoproduto.AsInteger    := Codigoproduto;
+  TablePedidodescricaoproduto.AsString  := Descricao;
+  TablePedidoquantidade.AsFloat         := Quantidade;
+  TablePedidoValorUnitario.AsCurrency   := PrecoVenda;
+  TablePedidoValorTotal.AsCurrency      := Quantidade *  PrecoVenda;
+  TablePedido.Post;
+
+  ValorTotal :=  ValorTotal + (Quantidade *  PrecoVenda);
+  PreencherValortotal;
+
+  LimparCamposInserirItem;
+
+  edProduto.SetFocus;
+
+end;
+
+procedure TFrmPedidoVendas.Label1MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+  const
+   sc_DragMove = $f012;
+begin
+
+ ReleaseCapture;
+  Perform(wm_SysCommand, sc_DragMove, 0);
+
+end;
+
+procedure TFrmPedidoVendas.LimparCamposInserirItem;
+begin
+ edProduto.clear;
+ edquantidade.Clear;
+ edvalor.Clear;
+
+  ProdutoSelecionado.codigo := 0;
+  ProdutoSelecionado.Descricao := '';
+end;
+
+procedure TFrmPedidoVendas.NovoPedido;
+begin
+
+  Status := sNovo;
+  lbCodigoPedido.Caption := '0000';
+  PreencherData; 
+  edCodigoCliente.ReadOnly := false;
+
+  edCodigoCliente.Clear;
+  edNomeCliente.Clear;
+  if not TablePedido.Active then TablePedido.Open;
+  
+  TablePedido.EmptyDataSet;
+  ValorTotal := 0;
+  PreencherValortotal;
+  edCodigoCliente.SetFocus;
+
+end;
+
+
+procedure TFrmPedidoVendas.btnGravarClick(Sender: TObject);
+begin
+  GravarPedido;
+end;
+
+procedure TFrmPedidoVendas.btnInserirClick(Sender: TObject);
+begin
+   InserirItem;
+end;
+
+procedure TFrmPedidoVendas.btnInsrirClick(Sender: TObject);
+begin
+  InserirItem;
+end;
+
+procedure TFrmPedidoVendas.btnNovoClick(Sender: TObject);
+begin
+ NovoPedido;
+end;
+
+procedure TFrmPedidoVendas.btnConsultarClick(Sender: TObject);
+begin
+  ConsultarPedido;
+end;
+
+procedure TFrmPedidoVendas.btnExcluirClick(Sender: TObject);
+begin
+ ExcluirPedido;
+end;
+
+procedure TFrmPedidoVendas.consultarcliente(codigo: integer);
+var
+cliente : Dtocliente;
+begin
+
+  cliente := ControllerCliente.Consultarcodigo(codigo); 
+
+  if cliente.Codigo = 0 then
+  begin
+    ExibirMensagem('Erro','Cliente não encontrado!') ;
+    edCodigoCliente.SetFocus;
+    edNomeCliente.Clear;
+    abort;
+  end;
+
+  ClienteSelecionado.codigo := cliente.Codigo;
+  clienteSelecionado.nome   := cliente.Nome;
+
+end;
+
+procedure TFrmPedidoVendas.ConsultarPedido;
+var
+ CodigoPedido : string ;
+ pedido  : DtoPedido;
+ cliente : DtoCliente;
+ Produto : DtoProduto;
+ Lista   : TList<DtoPedidoProduto>;
+ PedidoProduto : DtoPedidoProduto;
+
+begin
+
+  if InputQuery('Informe o nº Pedido','Pedido:', CodigoPedido) then
+  begin
+
+    try
+    
+      strtoint(CodigoPedido);
+    except
+      ExibirMensagem('Erro','Código inválido!');
+      abort;
+    end;      
+
+    pedido:= ControllerPedido.ConsultarCodigo(strToInt(CodigoPedido));
+
+    if pedido.Codigo <= 0 then
+    begin
+      ExibirMensagem('Erro','Pedido não encontrado!');
+      abort;
+    end;
+
+    Cliente := Controllercliente.ConsultarCodigo(pedido.CodigoCliente);
+
+    edCodigoCliente.Text    := inttoStr(pedido.CodigoCliente);
+    edNomeCliente.Text       := cliente.Nome;
+    edData.Text              := dateTostr(pedido.DataEmissao);
+    edCodigoCliente.ReadOnly :=true;
+    lbCodigoPedido.Caption   := intTostr(pedido.Codigo);
+
+    ValorTotal := Pedido.ValorTotal;
+
+
+    if not TablePedido.Active  then TablePedido.Open;
+
+    TablePedido.EmptyDataSet;
+
+    lista := ControllerPedidoProduto.ConsultarCodigo(pedido.Codigo);
+
+    if lista.Count > 0  then
+    begin
+
+      for PedidoProduto in lista do
+      begin
+
+        Produto := ControllerProduto.ConsultarCodigo(PedidoProduto.Codigoproduto);
+        
+        TablePedido.Insert;
+        TablePedidocodigoproduto.AsInteger    := PedidoProduto.Codigoproduto;
+        TablePedidodescricaoproduto.AsString  := Produto.Descricao;
+        TablePedidoquantidade.AsFloat         := PedidoProduto.Quantidade;
+        TablePedidoValorUnitario.AsCurrency   := PedidoProduto.valorUnitario;
+        TablePedidoValorTotal.AsCurrency      := PedidoProduto.Quantidade *  PedidoProduto.valorUnitario;
+        TablePedido.Post; 
+
+      end; 
+
+    end;  
+
+    PreencherValortotal;
+
+    status := sConsulta;
+
+    ExibirMensagem('Informação','Pedido Localizado!');
+    
+  end;
+
+end;
+
+procedure TFrmPedidoVendas.ConsultarProduto(codigo: integer);
+var
+Produto : DtoProduto;
+begin
+
+  Produto := ControllerProduto.Consultarcodigo(codigo);
+
+
+  if Produto.Codigo = 0 then
+  begin
+    ExibirMensagem('Erro','Produto não encontrado!') ;
+    edProduto.SetFocus;
+    abort;
+  end;
+
+
+  ProdutoSelecionado.codigo     := produto.codigo;
+  ProdutoSelecionado.Descricao  := Produto.Descricao;
+  ProdutoSelecionado.Precovenda := Produto.PrecoVenda;
+
+  PreencherProdutoSelecionado;
+
+
+end;
+
+procedure TFrmPedidoVendas.DBGrid1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+
+
+ if key = vk_delete then
+ begin
+
+   if Status = sConsulta then
+   begin
+    ExibirMensagem('Erro','Não é possível excluir item na consulta');
+    abort;
+   end;
+  
+   if TablePedido.IsEmpty then
+   begin
+
+    ExibirMensagem('Atenção','selecione um item');
+    abort;
+   
+   end;
+
+   if confirmar('Excluir item ?') then
+   begin
+     TablePedido.Delete;
+   end;
+ end;
+
+end;
+
+procedure TFrmPedidoVendas.pntopoMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+  const
+   sc_DragMove = $f012;
+begin
+
+ ReleaseCapture;
+  Perform(wm_SysCommand, sc_DragMove, 0);
+
+end;
+
+procedure TFrmPedidoVendas.PreencherClienteSelecionado;
+begin
+
+    edCodigoCliente.Text := intTostr(ClienteSelecionado.codigo);
+    edNomeCliente.Text    := ClienteSelecionado.nome;
+
+end;
+
+procedure TFrmPedidoVendas.PreencherData;
+begin
+  edData.Text := formatDateTime('dd/mm/yyyy',now);
+end;
+
+procedure TFrmPedidoVendas.PreencherProdutoSelecionado;
+begin
+
+  edProduto.Text :=  inttoStr(ProdutoSelecionado.codigo);
+  edValor.Text   := FormatFloat( '0.00' , ProdutoSelecionado.PrecoVenda);
+
+end;
+
+procedure TFrmPedidoVendas.PreencherValortotal;
+begin
+
+  lbValortotal.Caption := 'R$ '  + FormatFloat( '0.00' , ValorTotal);
+
+end;
+
+end.

@@ -1,0 +1,28 @@
+object DataModule1: TDataModule1
+  Height = 480
+  Width = 640
+  object FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink
+    Left = 344
+    Top = 120
+  end
+  object FDGUIxWaitCursor1: TFDGUIxWaitCursor
+    Provider = 'Forms'
+    Left = 344
+    Top = 248
+  end
+  object FDQuery1: TFDQuery
+    Left = 448
+    Top = 232
+  end
+  object FDConnection1: TFDConnection
+    Params.Strings = (
+      'Database=sys'
+      'User_Name=root'
+      'Password=mysql'
+      'Server=localhost\mysql80'
+      'DriverID=MySQL')
+    LoginPrompt = False
+    Left = 200
+    Top = 240
+  end
+end

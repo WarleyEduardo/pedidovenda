@@ -1,0 +1,122 @@
+unit UseCasePedido;
+
+interface
+
+uses uPedido, uResponse, uDtoPedido, uconnect, system.SysUtils, system.Generics.Collections;
+
+
+Type
+
+  TUseCasePedido = class
+  private
+   Connect: Tconnect;
+
+    FLista: TObjectList<Tpedido>;
+    procedure SetLista(const Value: TObjectList<Tpedido>);
+
+
+  public
+  function Cadastrar(pedido : TPedido)   : Response;
+  function Alterar(pedido : Tpedido)     : Response;
+  function Excluir(codigo : integer)     : Response;
+  function Consultar(dto : Dtopedido)    : TObjectList<Tpedido>;
+  function ConsultarId(codigo : integer) : Tpedido;
+
+
+  property Lista : TObjectList<Tpedido> read FLista write SetLista;
+
+  constructor create;
+  destructor Destroy;override;
+
+  end;
+
+
+
+implementation
+
+{ TUseCasePedido }
+
+function TUseCasePedido.Alterar(pedido: Tpedido): Response;
+
+var
+ Sql : string;
+ retorno :Response;
+begin
+
+   sql := ' update pedidos set '+
+          ' codigocliente =  '  + IntToStr(pedido.CodigoCliente) + ',' +
+          ' valortotal =  '     + Stringreplace(currTostr(pedido.Valortotal),',','.',[]) +
+          ' where codigo = '    + intTostr(pedido.Codigo) ;
+
+
+  retorno := connect.ExecSql(sql) ;
+
+  if retorno.Success then
+  begin
+    result.Success := true;
+    result.Message := 'Alterado com sucesso';
+  end else
+  begin
+    result := retorno;
+  end;
+
+end;
+
+function TUseCasePedido.Cadastrar(pedido: TPedido): Response;
+var
+ Sql : string;
+ retorno :Response;
+begin
+
+   sql := ' Insert into pedidos '+
+          '(codigocliente,DataEmissao,valorTotal)  values (' +
+           IntToStr(pedido.CodigoCliente) + ',' +
+           QuotedStr(dateTostr(pedido.DataEmissao))  + ',' +
+           Stringreplace(currTostr(pedido.Valortotal),',','.',[]) +  ')';
+
+  retorno := connect.ExecSql(sql) ;
+
+  if retorno.Success then
+  begin
+    result.Success := true;
+    result.Message := 'Cadastrado com sucesso';
+  end else
+  begin
+    result := retorno;
+  end;
+
+
+end;
+
+function TUseCasePedido.Consultar(dto: Dtopedido): TObjectList<Tpedido>;
+begin
+
+end;
+
+function TUseCasePedido.ConsultarId(codigo: integer): Tpedido;
+begin
+
+end;
+
+constructor TUseCasePedido.create;
+begin
+
+end;
+
+destructor TUseCasePedido.Destroy;
+begin
+
+  inherited;
+end;
+
+function TUseCasePedido.Excluir(codigo: integer): Response;
+begin
+
+end;
+
+procedure TUseCasePedido.SetLista(const Value: TObjectList<Tpedido>);
+begin
+  FLista := Value;
+end;
+
+end.

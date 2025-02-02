@@ -1,0 +1,233 @@
+unit UseCaseProduto;
+
+interface
+
+
+uses uProduto, system.SysUtils, uResponse, uConnect, uDtoProduto,
+system.Generics.Collections;
+
+
+ type TUseCaseProduto = class
+
+
+  private
+    Connect: Tconnect;
+    FLista: TObjectList<TProduto>;
+    procedure SetLista(const Value: TObjectList<TProduto>);
+
+    function consistirProdutoVenda(codigo : integer) : boolean;
+    function consistirProdutoExiste(codigo : integer) : boolean;
+
+
+  public
+
+  function Cadastrar(Produto : TProduto)  : Response;
+  function Alterar(Produto : TProduto)    : Response;
+  function Excluir(codigo : integer)      : Response;
+  function Consultar(dto : DtoProduto)    : TObjectList<TProduto>;
+  function ConsultarId(codigo : integer) : TProduto;
+
+   property Lista : TObjectList<TProduto> read FLista write SetLista;
+
+
+  constructor create;
+  destructor Destroy;override;
+
+
+
+ end;
+
+implementation
+
+{ UseCaseProduto }
+
+function TUseCaseProduto.Alterar(Produto: TProduto): Response;
+var
+ sql : string;
+ retorno : Response;
+begin
+   sql := ' update Produtos set ' +
+          ' descricao = '   +  Quotedstr(Produto.Descricao) + ',' +
+          ' precovenda = ' +  currTostr(Produto.precoVenda) + ',' +
+
+          ' where codigo = ' +  intToStr(Produto.Codigo);
+
+
+  retorno := connect.ExecSql(sql) ;
+
+  if retorno.Success then
+  begin
+    result.Success := true;
+    result.Message := 'Alterado com sucesso';
+  end else
+  begin
+    result := retorno;
+  end;
+
+
+end;
+
+function TUseCaseProduto.Cadastrar(Produto: TProduto): Response;
+var
+ Sql : string;
+ retorno :Response;
+begin
+
+   sql := ' Insert Into Produtos '+
+          '(descricao,precovenda)  values (' +
+          Quotedstr(Produto.descricao) +
+          currTostr(Produto.PrecoVenda) +  ')';
+
+  retorno := connect.ExecSql(sql) ;
+
+  if retorno.Success then
+  begin
+    result.Success := true;
+    result.Message := 'Cadastrado com sucesso';
+  end else
+  begin
+    result := retorno;
+  end;
+
+
+end;
+
+function TUseCaseProduto.consistirProdutoExiste(codigo: integer): boolean;
+var
+ sql : string;
+begin
+  sql := 'select 1 1 from Produtos where codigo = ' +  intToStr(codigo);
+
+  result := connect.Consulta(sql).Success
+end;
+
+function TUseCaseProduto.consistirProdutoVenda(codigo: integer): boolean;
+var
+ sql : string;
+begin
+  sql := 'select top 1  from pedidos where codigoProduto = ' +  intToStr(codigo);
+
+  result := connect.Consulta(sql).Success
+
+end;
+
+function TUseCaseProduto.Consultar(dto: DtoProduto): TObjectList <TProduto>;
+var
+ sql : string;
+
+ Produto : TProduto;
+begin
+
+   sql := 'select * from Produtos where 1 = 1 ' ;
+
+   if Dto.Codigo > 0 then
+   begin
+     sql := sql  +  ' and codigo = ' + inttostr(dto.codigo);
+   end else
+   begin
+
+      if dto.descricao <> '' then
+      begin
+        sql := Sql  + ' and nome like ' + Quotedstr('%' + dto.descricao + '%');
+      end;
+
+   end;
+
+
+   if connect.Consulta(sql).Success then
+   begin
+
+    Flista.Clear;
+
+
+
+     with connect do
+     begin
+        query.First;
+
+        while not query.Eof  do
+        begin
+
+           Produto := TProduto.Create;
+
+           Produto.Codigo  := query.FieldByName('id').asInteger;
+           Produto.Nome    := query.FieldByName('nome').AsString;
+           Produto.Cidade  := query.FieldByName('cidade').AsString;
+           Produto.UF      := query.FieldByName('uf').AsString;
+           Lista.Add(Produto);
+
+           query.Next;
+
+        end;
+
+     end;
+
+
+   end;
+
+
+end;
+
+function TUseCaseProduto.ConsultarId(codigo: integer): TProduto;
+var
+ dto : DtoProduto;
+ lista  : TObjectList<TProduto>;
+begin
+
+  dto.Codigo := codigo;
+  lista :=  Consultar(dto);
+
+  if Lista.Count > 0  then
+  begin
+    result := lista[0];
+  end;
+
+
+
+end;
+
+constructor TUseCaseProduto.create;
+begin
+
+ Lista := TObjectList<TProduto>.Create;
+ Connect := Tconnect.Create;
+
+end;
+
+destructor TUseCaseProduto.Destroy;
+begin
+
+  Lista.Free;
+  Connect.Free;
+
+  inherited;
+end;
+
+function TUseCaseProduto.Excluir(codigo: integer): Response;
+var
+ sql : string;
+ retorno : Response;
+begin
+  sql := 'delete from Produto '+
+          'where codigo = '  +  intToStr(codigo);
+
+   retorno := connect.ExecSql(sql) ;
+
+  if retorno.Success then
+  begin
+    result.Success := true;
+    result.Message := 'Excluído com sucesso';
+  end else
+  begin
+    result := retorno;
+  end;
+
+end;
+
+
+procedure TUseCaseProduto.SetLista(const Value: TObjectList<TProduto>);
+begin
+  FLista := Value;
+end;
+
+end.

@@ -1,0 +1,36 @@
+unit View.Mesnsagem;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls;
+
+type
+  TFrmMensagem = class(TForm)
+    pnTitulo: TPanel;
+    pnFundo: TPanel;
+    pnRodape: TPanel;
+    Panel6: TPanel;
+    Contarinerok: TPanel;
+    btnok: TPanel;
+    procedure btnokClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmMensagem: TFrmMensagem;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFrmMensagem.btnokClick(Sender: TObject);
+begin
+  self.Close;
+end;
+
+end.
