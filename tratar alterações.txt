@@ -1,0 +1,12 @@
+Tratar: 
+
+permitir alterar o item no grid.
+
+atualização do valor total ao excluir ou alterar um item. 
+
+setar foco dos botões no formulário de mensagens 
+
+Remover a responsabilidade de inclusão de itens da camada view para controller.
+
+Adicionar transações nas operações para quando houver falhar abortar toda a operação de inclusão.
+
