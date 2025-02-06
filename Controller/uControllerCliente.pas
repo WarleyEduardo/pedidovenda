@@ -44,14 +44,14 @@ begin
   begin
     result.Success := false;
     result.Message := 'Código Inválido';
-    abort;
+    exit;
   end;
 
   if trim(nome) = '' then
   begin
     result.Success := false;
     result.Message := 'Nome deve ser informado';
-    abort;
+    exit;
 
   end;
 
@@ -61,7 +61,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Código inexistente';
-    abort;
+    exit;
   end;
 
 
@@ -87,7 +87,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Nome deve ser informado';
-    abort;
+    exit;
   end;
 
 
@@ -161,7 +161,7 @@ begin
 
     result.Success := false;
     result.Message := 'Código Inválido';
-    abort;
+    exit;
   end;
 
   result := CasoUso.Excluir(codigo);

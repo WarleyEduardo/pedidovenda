@@ -14,7 +14,9 @@ uses
 type
 
 
-  Tstatus = (sConsulta, sNovo);
+  TstatusPedido  = (sConsulta, sNovo);
+  TstatusItem    = (sAlteracao, sInclusao);
+
 
 
    TProdutoSelecionado = record
@@ -73,7 +75,7 @@ type
     TablePedidoquantidade: TFloatField;
     TablePedidoValorUnitario: TCurrencyField;
     TablePedidoValorTotal: TCurrencyField;
-    DataSource1: TDataSource;
+    DsTablePedido: TDataSource;
     pnGrid: TPanel;
     DBGrid1: TDBGrid;
     pnData: TPanel;
@@ -84,9 +86,9 @@ type
     pnCodigoPedido: TPanel;
     Label5: TLabel;
     lbCodigoPedido: TLabel;
-    btninserir: TButton;
     Label8: TLabel;
     Label9: TLabel;
+    btnInserir: TBitBtn;
     procedure pntopoMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure btnFecharClick(Sender: TObject);
@@ -115,9 +117,11 @@ type
   private
     { Private declarations }
 
-    Status : Tstatus;
+    StatusPedido  : TstatusPedido;
+    StatusItem    : TStatusItem;
     
-    ValorTotal : Currency;
+    CodigoItemAlterar,CodigoItem    : Integer;
+    ValorTotal    : Currency;
 
     ProdutoSelecionado : TProdutoSelecionado;
     ClienteSelecionado : Tclienteselecionado;
@@ -142,6 +146,11 @@ type
     procedure PreencherValortotal;
     procedure NovoPedido;
     Procedure PreencherData;
+    Procedure ExcluirItem;
+    Procedure SelecionarItem;
+    procedure AlterarItem;
+    function RetornarCodigoItem : Integer;
+    procedure ConsistirCamposItem;
     
 
 
@@ -248,6 +257,42 @@ begin
   key:=#0;
 end;
 
+procedure TFrmPedidoVendas.ExcluirItem;
+begin
+
+   if StatusPedido = sConsulta then
+   begin
+    ExibirMensagem('Erro','Não é possível excluir item na consulta');
+    abort;
+   end;
+
+   if TablePedido.IsEmpty then
+   begin
+
+    ExibirMensagem('Atenção','selecione um item');
+    abort;
+
+   end;
+
+   if confirmar('Excluir item ?') then
+   begin
+     ValorTotal := ValorTotal - TablePedidoValorTotal.AsCurrency;
+     TablePedido.Delete;
+     PreencherValortotal;
+
+     if StatusItem = sAlteracao then
+     begin
+       StatusItem := sInclusao;
+       edProduto.Enabled := true;
+       LimparCamposInserirItem;
+     end;
+
+   end;
+
+
+
+end;
+
 procedure TFrmPedidoVendas.ExcluirPedido;
 var
  codigoPedido : string;
@@ -339,6 +384,7 @@ begin
 
     PreencherProdutoSelecionado;
 
+
   end;
 
   FrmProdutos.Free;
@@ -383,16 +429,16 @@ end;
 
 procedure TFrmPedidoVendas.GravarPedido;
 var
- CodigoCliente, CodigoPedido, CodigoProduto : integer;
+ CodigoCliente, CodigoPedido : integer;
  DataEmissao : Tdate;
  _response : Response;
  Total : currency;
- Quantidade : real;
- ValorUnitario : currency;
+ ListaItens : TList<DtoPedidoProduto>;
+ PedidoProduto : DtoPedidoProduto;
 
 begin
 
-  if status = sconsulta then
+  if StatusPedido = sconsulta then
   begin
     ExibirMensagem('Atenção','Gravação não permitida na consulta');
     abort;
@@ -415,53 +461,47 @@ begin
     abort;
   
   end;  
- 
 
- CodigoCliente := StrToInt(edCodigoCliente.Text);
+  DataEmissao := StrtoDate(FormatDateTime('dd/MM/yyyy', now));
 
- DataEmissao := StrtoDate(FormatDateTime('dd/MM/yyyy', now));
+  CodigoCliente := StrToInt(edCodigoCliente.Text);
+
+  ListaItens := TList<DtoPedidoProduto>.Create;
+
+
+
+  while not TablePedido.Eof do
+  begin
+
+    PedidoProduto.CodigoProduto  := TablePedidocodigoproduto.AsInteger;
+    PedidoProduto.Quantidade     := TablePedidoquantidade.AsFloat;
+    PedidoProduto.ValorUnitario  := TablePedidoValorUnitario.AsCurrency;
+    PedidoProduto.Quantidade     := TablePedidoquantidade.AsFloat;
+    PedidoProduto.ValorTotal     :=  PedidoProduto.Quantidade  *  PedidoProduto.ValorUnitario ;
+    ListaItens.Add(PedidoProduto);
+
+    TablePedido.Next;
+  end;
+
 
   Total := Valortotal;
 
- _Response :=  ControllerPedido.Cadastrar(CodigoCliente,DataEmissao,Total);
+  _Response :=  ControllerPedido.Cadastrar(CodigoCliente,DataEmissao,Total,ListaItens);
 
- if _response.Success then
- begin
-  CodigoPedido := _response.Codigo;
+  if _response.Success then
+  begin
 
-   TablePedido.First;
+    ExibirMensagem('Informação','Pedido gravado com sucesso n.º: ' + intTostr(_Response.Codigo) );
 
-   while not TablePedido.Eof do
-   begin
+    NovoPedido;
 
-     CodigoProduto  := TablePedidocodigoproduto.AsInteger;
-     Quantidade     := TablePedidoquantidade.AsFloat;
-     ValorUnitario  := TablePedidoValorUnitario.AsCurrency;
+  end else
+  begin
 
+    ExibirMensagem('Erro',_response.Message);
+  end;
 
-     _response := ControllerPedidoProduto.Cadastrar(CodigoPedido,codigoProduto,
-                   quantidade,ValorUnitario);
-
-     if not _response.Success then
-     begin
-       exibirMensagem('Erro','Falha ao gravar item ' +  TablePedidocodigoproduto.AsString +
-                      '   ' + TablePedidodescricaoproduto.AsString);
-     end;
-
-
-    TablePedido.Next;
-   end;
-
-
-   ExibirMensagem('Informação','Pedido gravado com sucesso n.º: ' + intTostr(CodigoPedido) );
-
-   NovoPedido;
-
- end else
- begin
-
-   ExibirMensagem('Erro','Falha ao gravar pedido!');
- end;
+  ListaItens.Free;
 
 end;
 
@@ -475,7 +515,7 @@ var
 
 begin
 
-   if status = sconsulta then
+   if statusPedido = sconsulta then
   begin
     ExibirMensagem('Atenção','Inserção não permitida na consulta');
     abort;
@@ -498,34 +538,8 @@ begin
   end;
 
 
-  if trim(edQuantidade.Text) = '' then
-  begin
-    ExibirMensagem('Atenção','Quantidade  deve ser informado');
-    edQuantidade.SetFocus;
-    abort;
-  end;
 
-  if strtoFloat(edProduto.Text) <= 0 then
-  begin
-    ExibirMensagem('Erro','Quantidade inválido');
-    edQuantidade.SetFocus;
-    abort;
-  end;
-
-
-  if trim(edValor.Text) = '' then
-  begin
-    ExibirMensagem('Atenção','Valor deve ser informado');
-    edValor.SetFocus;
-    abort;
-  end;
-
-  if StrToCurr(edValor.Text) <= 0 then
-  begin
-    ExibirMensagem('Erro','Valor inválido');
-    edValor.SetFocus;
-    abort;
-  end;
+  ConsistirCamposItem;
 
   CodigoProduto := strtoInt(edProduto.Text);
   Quantidade    := strtoFloat(edQuantidade.Text);
@@ -556,6 +570,7 @@ begin
   if not(TablePedido.Active) then  TablePedido.Open;
 
   TablePedido.Insert;
+  TablePedidocodigo.AsInteger           := RetornarCodigoItem;
   TablePedidocodigoproduto.AsInteger    := Codigoproduto;
   TablePedidodescricaoproduto.AsString  := Descricao;
   TablePedidoquantidade.AsFloat         := Quantidade;
@@ -585,9 +600,10 @@ end;
 
 procedure TFrmPedidoVendas.LimparCamposInserirItem;
 begin
- edProduto.clear;
- edquantidade.Clear;
- edvalor.Clear;
+
+  edProduto.clear;
+  edquantidade.Clear;
+  edvalor.Clear;
 
   ProdutoSelecionado.codigo := 0;
   ProdutoSelecionado.Descricao := '';
@@ -596,7 +612,11 @@ end;
 procedure TFrmPedidoVendas.NovoPedido;
 begin
 
-  Status := sNovo;
+  StatusPedido := sNovo;
+  StatusItem   := sInclusao;
+  CodigoItem   := 0;
+  CodigoItemAlterar := 0;
+
   lbCodigoPedido.Caption := '0000';
   PreencherData; 
   edCodigoCliente.ReadOnly := false;
@@ -604,9 +624,10 @@ begin
   edCodigoCliente.Clear;
   edNomeCliente.Clear;
   if not TablePedido.Active then TablePedido.Open;
-  
   TablePedido.EmptyDataSet;
   ValorTotal := 0;
+
+  edProduto.Enabled := true;
   PreencherValortotal;
   edCodigoCliente.SetFocus;
 
@@ -620,7 +641,14 @@ end;
 
 procedure TFrmPedidoVendas.btnInserirClick(Sender: TObject);
 begin
-   InserirItem;
+
+  if StatusItem = sInclusao then
+  begin
+    InserirItem;
+  end else
+  begin
+    AlterarItem;
+  end;
 end;
 
 procedure TFrmPedidoVendas.btnInsrirClick(Sender: TObject);
@@ -633,6 +661,107 @@ begin
  NovoPedido;
 end;
 
+procedure TFrmPedidoVendas.ConsistirCamposItem;
+begin
+
+  if trim(edQuantidade.Text) = '' then
+  begin
+    ExibirMensagem('Atenção','Quantidade  deve ser informado');
+    edQuantidade.SetFocus;
+    abort;
+  end;
+
+  if strtoFloat(edProduto.Text) <= 0 then
+  begin
+    ExibirMensagem('Erro','Quantidade inválido');
+    edQuantidade.SetFocus;
+    abort;
+  end;
+
+
+  if trim(edValor.Text) = '' then
+  begin
+    ExibirMensagem('Atenção','Valor deve ser informado');
+    edValor.SetFocus;
+    abort;
+  end;
+
+  if StrToCurr(edValor.Text) <= 0 then
+  begin
+    ExibirMensagem('Erro','Valor inválido');
+    edValor.SetFocus;
+    abort;
+  end;
+end;
+
+procedure TFrmPedidoVendas.SelecionarItem;
+begin
+
+   if StatusPedido = sConsulta then
+   begin
+    ExibirMensagem('Erro','Não é possível alterar item na consulta');
+    abort;
+   end;
+
+   if TablePedido.IsEmpty then
+   begin
+
+    ExibirMensagem('Atenção','selecione um item');
+    abort;
+   end;
+
+
+   CodigoItemAlterar  := TablePedidocodigo.AsInteger;
+   edProduto.Text     := TablePedidocodigoproduto.AsString;
+   edQuantidade.text  := TablePedidoquantidade.AsString;
+   edValor.text       := TablePedidoValorUnitario.AsString;
+
+   StatusItem := sAlteracao;
+   edProduto.Enabled := false;
+
+
+end;
+
+procedure TFrmPedidoVendas.AlterarItem;
+var
+Quantidade : real;
+PrecoVenda : currency;
+
+begin
+
+  if confirmar('confirmar alteração do item?') then
+  begin
+
+    ConsistirCamposItem;
+
+    Quantidade    := strtoFloat(edQuantidade.Text);
+    PrecoVenda    := StrToCurr(edValor.text);
+
+
+    TablePedido.Locate('codigo',CodigoItemalterar,[]);
+
+    ValorTotal := ValorTotal - TablePedidoValorTotal.AsCurrency;
+
+    TablePedido.Edit;
+    TablePedidoquantidade.AsFloat       := Quantidade;
+    TablePedidoValorUnitario.AsCurrency :=PrecoVenda;
+    TablePedidoValorTotal.AsCurrency    := quantidade * PrecoVenda;
+    TablePedido.post;
+
+    ValorTotal := ValorTotal + TablePedidoValorTotal.AsCurrency;
+
+    PreencherValortotal;
+
+  end;
+
+
+  edProduto.Enabled := true;
+  StatusItem := sInclusao;
+
+  LimparCamposInserirItem;
+  edProduto.SetFocus;
+end;
+
 procedure TFrmPedidoVendas.btnConsultarClick(Sender: TObject);
 begin
   ConsultarPedido;
@@ -640,7 +769,7 @@ end;
 
 procedure TFrmPedidoVendas.btnExcluirClick(Sender: TObject);
 begin
- ExcluirPedido;
+  ExcluirPedido;
 end;
 
 procedure TFrmPedidoVendas.consultarcliente(codigo: integer);
@@ -732,7 +861,7 @@ begin
 
     PreencherValortotal;
 
-    status := sConsulta;
+    statusPedido := sConsulta;
 
     ExibirMensagem('Informação','Pedido Localizado!');
     
@@ -772,26 +901,14 @@ begin
 
  if key = vk_delete then
  begin
-
-   if Status = sConsulta then
-   begin
-    ExibirMensagem('Erro','Não é possível excluir item na consulta');
-    abort;
-   end;
-  
-   if TablePedido.IsEmpty then
-   begin
-
-    ExibirMensagem('Atenção','selecione um item');
-    abort;
-   
-   end;
-
-   if confirmar('Excluir item ?') then
-   begin
-     TablePedido.Delete;
-   end;
+   ExcluirItem;
  end;
+
+ if key = VK_RETURN then
+ begin
+   SelecionarItem;
+ end;
+
 
 end;
 
@@ -832,6 +949,12 @@ begin
 
   lbValortotal.Caption := 'R$ '  + FormatFloat( '0.00' , ValorTotal);
 
+end;
+
+function TFrmPedidoVendas.RetornarCodigoItem: Integer;
+begin
+ inc(CodigoItem);
+ result := CodigoItem;
 end;
 
 end.

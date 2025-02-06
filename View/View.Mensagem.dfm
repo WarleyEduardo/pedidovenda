@@ -12,7 +12,9 @@ object FrmMensagem: TFrmMensagem
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  KeyPreview = True
   Position = poScreenCenter
+  OnKeyPress = FormKeyPress
   OnShow = FormShow
   TextHeight = 15
   object pnFundo: TPanel
@@ -61,75 +63,42 @@ object FrmMensagem: TFrmMensagem
         BevelOuter = bvNone
         Color = 14912079
         ParentBackground = False
-        TabOrder = 0
+        TabOrder = 2
       end
-      object ContainerOk: TPanel
+      object btnCancelar: TBitBtn
+        Left = 140
+        Top = 15
+        Width = 114
+        Height = 42
+        ParentCustomHint = False
+        BiDiMode = bdLeftToRight
+        Caption = 'N'#227'o'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = 262312
+        Font.Height = -19
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentBiDiMode = False
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = False
+        TabOrder = 1
+        OnClick = btnCancelarClick
+      end
+      object btnok: TBitBtn
         Left = 10
         Top = 15
-        Width = 156
-        Height = 45
-        BevelOuter = bvNone
-        Color = clWhite
-        Padding.Left = 2
-        Padding.Top = 2
-        Padding.Right = 2
-        Padding.Bottom = 2
-        ParentBackground = False
-        TabOrder = 1
-        object btnok: TPanel
-          Left = 2
-          Top = 2
-          Width = 152
-          Height = 41
-          Cursor = crHandPoint
-          Align = alClient
-          BevelOuter = bvNone
-          Caption = 'Ok'
-          Color = 8404992
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWhite
-          Font.Height = -19
-          Font.Name = 'Segoe UI'
-          Font.Style = [fsBold]
-          ParentBackground = False
-          ParentFont = False
-          TabOrder = 0
-          OnClick = btnokClick
-        end
-      end
-      object containerCancelar: TPanel
-        Left = 180
-        Top = 15
-        Width = 156
-        Height = 45
-        BevelOuter = bvNone
-        Color = clWhite
-        Padding.Left = 2
-        Padding.Top = 2
-        Padding.Right = 2
-        Padding.Bottom = 2
-        ParentBackground = False
-        TabOrder = 2
-        object btnCancelar: TPanel
-          Left = 2
-          Top = 2
-          Width = 152
-          Height = 41
-          Cursor = crHandPoint
-          Align = alClient
-          BevelOuter = bvNone
-          Caption = 'N'#227'o'
-          Color = 262312
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWhite
-          Font.Height = -19
-          Font.Name = 'Segoe UI'
-          Font.Style = [fsBold]
-          ParentBackground = False
-          ParentFont = False
-          TabOrder = 0
-          OnClick = btnCancelarClick
-        end
+        Width = 114
+        Height = 41
+        Caption = 'Sim'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = 8404992
+        Font.Height = -19
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        OnClick = btnokClick
       end
     end
     object pnCentro: TPanel

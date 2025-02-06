@@ -26,12 +26,15 @@ type
     procedure SetQuery(const Value: TFdQuery);
 
 
+
     public
 
     property  Query : TFdQuery read FQuery write SetQuery;
     function Consulta(Sql : string) : Response;
     function ExecSql(sql: string)   : Response;
-
+    procedure StartTransaction;
+    procedure Commit;
+    procedure Rollback;
 
      constructor Create;
      destructor destroy;override;
@@ -44,6 +47,16 @@ uses
   Vcl.Forms;
 
 { Tconnect }
+
+procedure Tconnect.Commit;
+var
+ sql :string;
+begin
+  sql := 'COMMIT';
+
+  self.ExecSql(sql);
+
+end;
 
 function Tconnect.Consulta(Sql: string): Response;
 
@@ -188,9 +201,29 @@ begin
 
 end;
 
+procedure Tconnect.Rollback;
+var
+ sql :string;
+begin
+  sql := 'ROLLBACK';
+
+  self.ExecSql(sql);
+
+end;
+
 procedure Tconnect.SetQuery(const Value: TFdQuery);
 begin
   FQuery := Value;
+end;
+
+procedure Tconnect.StartTransaction;
+var
+ sql :string;
+begin
+  sql := 'START TRANSACTION';
+
+  self.ExecSql(sql);
+
 end;
 
 end.

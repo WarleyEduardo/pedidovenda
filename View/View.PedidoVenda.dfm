@@ -319,7 +319,7 @@ object FrmPedidoVendas: TFrmPedidoVendas
             Height = 439
             TabStop = False
             Align = alClient
-            DataSource = DataSource1
+            DataSource = DsTablePedido
             DrawingStyle = gdsClassic
             FixedColor = 14912079
             Font.Charset = DEFAULT_CHARSET
@@ -590,26 +590,13 @@ object FrmPedidoVendas: TFrmPedidoVendas
             ParentBackground = False
             ParentFont = False
             TabOrder = 0
-            object btninserir: TButton
+            object btnInserir: TBitBtn
               Left = 0
               Top = 0
               Width = 282
               Height = 73
-              ParentCustomHint = False
               Align = alClient
-              BiDiMode = bdLeftToRight
               Caption = 'Inserir'
-              DoubleBuffered = False
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clLime
-              Font.Height = -37
-              Font.Name = 'Segoe UI'
-              Font.Style = []
-              ParentBiDiMode = False
-              ParentDoubleBuffered = False
-              ParentFont = False
-              ParentShowHint = False
-              ShowHint = False
               TabOrder = 0
               OnClick = btnInserirClick
             end
@@ -623,7 +610,6 @@ object FrmPedidoVendas: TFrmPedidoVendas
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 4
-          ExplicitTop = 0
           object Label5: TLabel
             Left = 0
             Top = 0
@@ -642,8 +628,6 @@ object FrmPedidoVendas: TFrmPedidoVendas
             ParentBiDiMode = False
             ParentColor = False
             ParentFont = False
-            ExplicitLeft = 90
-            ExplicitTop = 14
             ExplicitWidth = 86
           end
           object lbCodigoPedido: TLabel
@@ -664,8 +648,6 @@ object FrmPedidoVendas: TFrmPedidoVendas
             ParentBiDiMode = False
             ParentColor = False
             ParentFont = False
-            ExplicitLeft = 113
-            ExplicitTop = 48
             ExplicitWidth = 56
           end
         end
@@ -861,7 +843,7 @@ object FrmPedidoVendas: TFrmPedidoVendas
       DisplayFormat = '0.00'
     end
   end
-  object DataSource1: TDataSource
+  object DsTablePedido: TDataSource
     DataSet = TablePedido
     Left = 394
     Top = 451

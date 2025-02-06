@@ -16,6 +16,8 @@ Type
     procedure SetLista(const Value: TList<DtoPedido>);
     function RetornarCodigo(id : integer) : integer;
 
+
+
   public
   function Cadastrar(pedido : TPedido)   : Response;
   function Alterar(pedido : Tpedido)     : Response;
@@ -23,9 +25,12 @@ Type
   function Consultar(dto : DtoConsultapedido)    : TList<DtoPedido>;
   function ConsultarId(codigo : integer) : Tpedido;
   function consistirExiste(codigo : integer) : boolean;
-
-
   property Lista : TList<DtoPedido> read FLista write SetLista;
+  procedure IniciarOperacao;
+  procedure ConfirmarOperacao;
+  procedure CancelarOperacao;
+
+
 
   constructor create;
   destructor Destroy;override;
@@ -92,6 +97,16 @@ begin
   end;
 
 
+end;
+
+procedure TUseCasePedido.CancelarOperacao;
+begin
+  connect.Rollback;
+end;
+
+procedure TUseCasePedido.ConfirmarOperacao;
+begin
+   connect.Commit;
 end;
 
 function TUseCasePedido.Consultar(dto: DtoConsultapedido): TList<DtoPedido>;
@@ -237,6 +252,13 @@ begin
   begin
     result := retorno;
   end;
+
+end;
+
+procedure TUseCasePedido.IniciarOperacao;
+begin
+
+ connect.StartTransaction;
 
 end;
 

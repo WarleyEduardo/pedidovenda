@@ -2,6 +2,7 @@ unit uPedido;
 
 interface
 
+
  type
 
  Tpedido = class
@@ -11,11 +12,13 @@ interface
     FValorTotal: Currency;
     FDataEmissao: Tdate;
     FId: integer;
+
     procedure SetCodigoCliente(const Value: integer);
     procedure SetCodigo(const Value: integer);
     procedure SetDataEmissao(const Value: Tdate);
     procedure SetValorTotal(const Value: Currency);
     procedure SetId(const Value: integer);
+
   published
 
   property Id : integer read FId write SetId;
@@ -24,7 +27,10 @@ interface
   property DataEmissao : Tdate read FDataEmissao write SetDataEmissao;
   Property ValorTotal  : Currency read FValorTotal write SetValorTotal;
 
+
+
   constructor create;
+  destructor destroy;override;
 
  end;
 
@@ -44,7 +50,12 @@ begin
   FCodigo     := 0;
   FValorTotal := 0;
 
+end;
 
+destructor Tpedido.destroy;
+begin
+
+  inherited;
 end;
 
 procedure Tpedido.SetCodigo(const Value: integer);

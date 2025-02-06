@@ -6,8 +6,6 @@ interface
  system.SysUtils, system.Generics.Collections,  uresponse;
 
 
-
-
  type
 
  TControllerPedidoProduto = class
@@ -51,7 +49,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Código pedido inválido';
-    abort;
+    exit;
   end;
 
 
@@ -59,7 +57,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Quantidade inválida';
-    abort;
+    exit;
   end;
 
 
@@ -67,7 +65,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Valor  inválido';
-    abort;
+    exit;
   end;
 
 
@@ -96,7 +94,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Código pedido inválido';
-    abort;
+    exit;
   end;
 
 
@@ -104,7 +102,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Código produto inválido';
-    abort;
+    exit;
   end;
 
 
@@ -113,7 +111,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'quantidade inválida';
-    abort;
+    exit;
   end;
 
 
@@ -121,7 +119,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'valor inválido';
-    abort;
+    exit;
   end;
 
 
@@ -129,7 +127,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Código produto inexistente';
-    abort;
+    exit;
   end;
 
 
@@ -185,7 +183,7 @@ begin
 
    result.Success := false;
    result.Message := 'Código Inválido';
-   abort;
+   exit;
 
  end;
 
@@ -196,16 +194,16 @@ end;
 function TControllerPedidoProduto.ExcluirItem(codigo: integer): Response;
 begin
 
- if codigo <= 0 then
- begin
+  if codigo <= 0 then
+  begin
 
-  result.Success := false;
-  result.Message := 'Código Inválido';
-  abort;
+   result.Success := false;
+   result.Message := 'Código Inválido';
+   exit;
 
- end;
+  end;
 
- Result := CasoUsoPedidoProduto.ExcluirItem(codigo);
+  Result := CasoUsoPedidoProduto.ExcluirItem(codigo);
 
 
 end;

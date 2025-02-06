@@ -3,7 +3,8 @@ unit uControllerPedido;
 interface
 
  uses uPedido, uUseCaseCliente, uDtoPedido, uUsecasePedido, uUseCasePedidoProduto,
-  system.SysUtils, system.Generics.Collections,  uresponse;
+  system.SysUtils, system.Generics.Collections,  uresponse, uDtoPedidoProduto,
+  uPedidoProduto;
 
 
 
@@ -19,7 +20,8 @@ interface
 
   public
 
-  function Cadastrar(CodigoCliente: Integer;DataEmissao: Tdate; ValorTotal: currency) : Response;
+  function Cadastrar(CodigoCliente: Integer;DataEmissao: Tdate; ValorTotal: currency;
+  ListaItens : Tlist<DtoPedidoProduto>) : Response;
   function Alterar(codigo: integer; CodigoCliente: Integer; ValorTotal : currency) : Response;
   function Excluir(codigo : integer) : Response;
   function Consultar(codigo: integer;codigocliente: integer; DataInicial,DataFinal : Tdate) : TObjectList<TPedido>;
@@ -47,7 +49,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Código cliente inválido';
-    abort;
+    exit;
   end;
 
 
@@ -55,7 +57,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Código cliente inválido';
-    abort;
+    exit;
   end;
 
 
@@ -63,7 +65,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Código cliente inexistente';
-    abort;
+    exit;
   end;
 
 
@@ -73,6 +75,7 @@ begin
 
   result := CasoUsoPedido.Alterar(pedido);
 
+
   Pedido.Free;
 
 
@@ -80,17 +83,23 @@ begin
 end;
 
 function TControllerPedido.Cadastrar(CodigoCliente : integer;
-  DataEmissao: Tdate; ValorTotal: currency): Response;
+  DataEmissao: Tdate; ValorTotal: currency; ListaItens : Tlist<DtoPedidoProduto>): Response;
 
   var
   Pedido : Tpedido;
+  _DtoPedidoproduto : DtoPedidoProduto;
+  _response : response;
+  CodigoPedido : Integer;
+  PedidoProduto : TPedidoProduto;
+  erro : boolean;
+
 begin
 
   if CodigoCliente  <= 0  then
   begin
     result.Success := false;
     result.Message := 'Código cliente inválido';
-    abort;
+    exit;
   end;
 
 
@@ -98,7 +107,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Código cliente inválido';
-    abort;
+    exit;
   end;
 
 
@@ -106,18 +115,77 @@ begin
   begin
     result.Success := false;
     result.Message := 'Código cliente inexistente';
-    abort;
+    exit;
   end;
 
+  erro := false;
+
+  // begin transaction
+
+  CasoUsoPedido.IniciarOperacao;
 
   Pedido := TPedido.Create;
   pedido.CodigoCliente  := codigoCliente;
   pedido.DataEmissao    := DataEmissao;
   pedido.ValorTotal     := ValorTotal;
 
-  result := CasoUsoPedido.Cadastrar(pedido);
+  _response := CasoUsoPedido.Cadastrar(pedido);
+
+  erro := not _response.Success;
+
+  if _response.Success then
+  begin
+
+    CodigoPedido := _response.Codigo;
+
+
+    for _DtoPedidoproduto in ListaItens do
+    begin
+
+
+      PedidoProduto := TPedidoProduto.create;
+
+      PedidoProduto.CodigoPedido  := codigoPedido;
+      PedidoProduto.CodigoProduto := _DtoPedidoproduto.CodigoProduto;
+      PedidoProduto.Quantidade    := _DtoPedidoproduto.Quantidade;
+      PedidoProduto.ValorUnitario := _DtoPedidoproduto.ValorUnitario;
+      PedidoProduto.ValorTotal    := _DtoPedidoproduto.ValorTotal;
+
+      _response := CasoUsoPedidoProduto.Cadastrar(PedidoProduto);
+
+      PedidoProduto.Free;
+
+
+      if not _response.Success then
+      begin
+         erro := true;
+         break;
+      end;
+
+    end;
+
+  end;
 
   Pedido.Free;
+
+
+  if erro then
+  begin
+     // roolbak
+    CasoUsoPedido.CancelarOperacao;
+    _response.Message := 'Operação cancelada, falha na gravação do pedido'
+  end else
+  begin
+
+    // commit;
+    CasoUsoPedido.ConfirmarOperacao;
+    _response.Message := 'Cadastrado com sucesso';
+    _response.Codigo  := CodigoPedido;
+
+  end;
+
+
+  result := _response;
 
 
 end;
@@ -190,7 +258,7 @@ begin
 
     result.Success := false;
     result.Message := 'Código Inválido';
-    abort;
+    exit;
   end;
 
   retorno := CasoUsoPedido.Excluir(codigo);

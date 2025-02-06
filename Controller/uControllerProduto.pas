@@ -42,14 +42,14 @@ begin
   begin
     result.Success := false;
     result.Message := 'Código Inválido';
-    abort;
+    exit;
   end;
 
   if trim(descricao) = ''  then
   begin
     result.Success := false;
     result.Message := 'Descrição deve ser informada';
-    abort;
+    exit;
   end;
 
 
@@ -57,7 +57,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Preco de Venda deve ser informado';
-    abort;
+    exit;
   end;
 
 
@@ -65,7 +65,7 @@ begin
   begin
     result.Success := false;
     result.Message := 'Código inexistente';
-    abort;
+    exit;
   end;
 
   Produto := TProduto.Create;
@@ -88,14 +88,14 @@ begin
   begin
     result.Success := false;
     result.Message := 'Descrição deve ser informada';
-    abort;
+    exit;
   end;
 
   if PrecoVenda <=  0  then
   begin
     result.Success := false;
     result.Message := 'Preço de venda deve ser informado';
-    abort;
+    exit;
   end;
 
   Produto   := TProduto.Create;
@@ -167,8 +167,7 @@ begin
 
     result.Success := false;
     result.Message := 'Código Inválido';
-
-    abort;
+    exit;
   end;
 
 
